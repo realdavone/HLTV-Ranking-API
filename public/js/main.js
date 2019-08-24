@@ -26,4 +26,9 @@ document.getElementById('submitDate').addEventListener('click', () => {
     let date = document.getElementById('date').value.split('-');
 
     getData(date[0], parseMonth(date[1]), date[2]);
-})
+});
+
+window.onload = function(){
+    document.getElementById('url').innerText = location.href;
+    document.getElementById('url2').innerText = location.href;
+}

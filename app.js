@@ -3,7 +3,7 @@ const app = express();
 const request = require('request');
 const cheerio = require('cheerio');
 
-const PORT = process.env.port || 3000;
+const PORT = process.env.PORT || 3000;
 
 app.listen(PORT, () => console.log(`Serving at ${PORT}`));
 
@@ -24,27 +24,23 @@ app.get('/ranking/:year/:month/:day', (req, res) => {
 
             $('.ranked-team').each((i, elm1) => {
                 const $element = $(elm1);
-                const $name = $element.find('.name');
-                const $logo = $element.find('img');
-                const $points = $element.find('.points');
-                const $teamLink = $element.find('.moreLink');
-                /*
-                const players = [];
+                $name = $element.find('.name'),
+                $logo = $element.find('img'),
+                $points = $element.find('.points'),
+                $teamLink = $element.find('.moreLink'),
+                $changeInRank = $element.find('.change'),
+                $playersHolder = $element.find('.playersLine');
+                
+                const players = $playersHolder.text().match(/\S[A-Za-z0-9-_]*/gm);
 
-                $('.rankingNicknames').each((i, elm2) => {
-                    const $element2 = $(elm2);
-                    players.push($element2.text());
-                });
-                */
                 const team = {
                     team_name: $name.text(),
                     team_logo: $logo.attr('src'),
                     team_hltv_link: `https://www.hltv.org${$teamLink.attr('href')}`,
                     team_points: $points.text().match(/\d+/)[0],
-                    //team_players: players
+                    team_change_in_rank: `${$changeInRank.text()==='-'?'0':$changeInRank.text()}`,
+                    team_players: players
                 }
-
-
 
                 teams.push(team);
             });
