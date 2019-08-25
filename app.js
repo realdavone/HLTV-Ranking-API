@@ -12,9 +12,10 @@ app.use(express.json());
 
 app.get('/ranking/:year/:month/:day', (req, res) => {
 
-    const date = new Date(`${req.params.day}.${req.params.month}.${req.params.year}`);
-    
-    request(`https://www.hltv.org/ranking/teams/${req.params.year}/${req.params.month}/${date.getDay()===0?req.params.day-6:req.params.day-date.getDay()+1}`, (error, response, html) => {
+    //const date = new Date(`${req.params.day}.${req.params.month}.${req.params.year}`);
+    const date = getMonday(new Date(`${req.params.day}.${req.params.month}.${req.params.year}`));
+
+    request(`https://www.hltv.org/ranking/teams/${date.getFullYear()}/${getMonthInString(date.getMonth())}/${date.getDate()}`, (error, response, html) => {
 
         if(!error){
             const $ = cheerio.load(html);
@@ -53,3 +54,14 @@ app.get('/ranking/:year/:month/:day', (req, res) => {
     });
 });
 
+function getMonday(d) {
+    d = new Date(d);
+    var day = d.getDay(),
+        diff = d.getDate() - day + (day == 0 ? -6:1); // adjust when day is sunday
+    return new Date(d.setDate(diff));
+}
+
+function getMonthInString(month) {
+    const months = ["january", "february", "march", "april", "may", "june", "july", "august", "september", "october", "november", "december"];
+    return months[month];
+}
