@@ -51,10 +51,15 @@ app.get('/ranking/:year/:month/:day', (req, res) => {
                 teams.push(team);
             });
 
-            res.json({
-                header,
-                teams
-            })
+            if(teams.length === 0){
+                res.statusMessage = "Did not find any data";
+                res.status(404).end()
+            }else{
+                res.json({
+                    header,
+                    teams
+                }); 
+            }
         }
     });
 });
@@ -62,7 +67,7 @@ app.get('/ranking/:year/:month/:day', (req, res) => {
 function getMonday(d) {
     d = new Date(d);
     var day = d.getDay(),
-        diff = d.getDate() - day + (day == 0 ? -6:1); // adjust when day is sunday
+        diff = d.getDate() - day + (day == 0 ? -6 : 1); 
     return new Date(d.setDate(diff));
 }
 

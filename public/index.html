@@ -5,21 +5,31 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <link rel="stylesheet" href="css/style.css">
-    <link href="https://fonts.googleapis.com/css?family=Lexend+Deca&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Merriweather&display=swap" rel="stylesheet">
     <title>HLTV Ranking API</title>
 </head>
 <body>
+    <header>
+        <h1>HLTV Ranking</h1>
+    </header>
     <main>
-        <h1>HLTV Ranking API</h1>
-        <input id="date" type="date">
-        <button id="submitDate" type="submit">Submit</button>
-        <p>
-            <b>API CALL</b><br>
-            <span id="url"></span>ranking/year/month/day<br>
-            <em>example</em><br>
-            <span id="url2"></span>ranking/2019/january/1<br>
-        </p>
+        <div>
+            <div class="innerDiv">
+                <input id="date" type="date">
+                <button id="submitDate" type="submit">Submit</button>
+                <p class="hint hide">You may want to open dev tools to see the console (CTRL + Shift + I)</p>
+            </div>
+            <p>
+                <b>API CALL</b><br>
+                <span id="url"></span>ranking/year/month/day<br><br>
+                <em>example</em><br>
+                <span id="url2"></span>ranking/2019/january/1<br>
+            </p>
+        </div>
     </main>
+    <footer>
+        Made by David Kuljovsky
+    </footer>
 <script src="js/main.js"></script>
 </body>
 </html>

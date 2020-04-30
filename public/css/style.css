@@ -1,2 +1,10 @@
-*{margin:0;padding:0;box-sizing:border-box;font-family:'Lexend Deca',sans-serif;}
-body{background:#0000a3;color:#ffffff;width:100%;min-height:100vh;display:flex;justify-content:center;align-items:center;}
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Merriweather',sans-serif;}
+body{min-height:100vh;background:#eeeeee;}
+header{background:#ffffff;padding:1rem 2rem;border-bottom:1px solid #e7e7e7;}
+main{width:100%;display:flex;justify-content:center;align-items:center;flex-direction:column;padding:3rem 0;}
+footer{background:#ffffff;position:absolute;bottom:0;padding:1rem 2rem;text-align:right;width:100%;border-top:1px solid #e7e7e7;}
+input[type=date]{padding:10px;border-radius:30px;text-align:center;border:2px solid #e7e7e7;width:100%;margin-bottom:5px;}
+button#submitDate{width:100%;padding:0.5rem 0;}
+div.innerDiv{margin-bottom:1rem;}
+p.hint{font-size:0.65rem;padding-top:5px;text-align:center;}
+.hide{display:none;}
