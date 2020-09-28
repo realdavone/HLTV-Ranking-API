@@ -17,51 +17,65 @@ app.use(function(req, res, next) {
 
 app.get('/ranking/:year/:month/:day', (req, res) => {
 
-    //const date = new Date(`${req.params.day}.${req.params.month}.${req.params.year}`);
-    const date = getMonday(new Date(`${req.params.day}.${req.params.month}.${req.params.year}`));
+    const date = new Date(`${req.params.day}.${req.params.month}.${req.params.year}`);
+    const today = new Date();
+    
+    if(date.getTime() > today.getTime()){
+        res.statusMessage = "Did not find any data";
+        res.status(404).end();
+    } else {
+        //getMonday(new Date(`${req.params.day}.${req.params.month}.${req.params.year}`));
+        scrapWeb(getMonday(new Date(`${req.params.day}.${req.params.month}.${req.params.year}`)));
+    }
 
-    request(`https://www.hltv.org/ranking/teams/${date.getFullYear()}/${getMonthInString(date.getMonth())}/${date.getDate()}`, (error, response, html) => {
 
-        if(!error){
-            const $ = cheerio.load(html);
 
-            const header = $('.regional-ranking-header').text();
-            const teams = [];
+    
+    function scrapWeb(date) {
+        request(`https://www.hltv.org/ranking/teams/${date.getFullYear()}/${getMonthInString(date.getMonth())}/${date.getDate()}`, (error, response, html) => {
 
-            $('.ranked-team').each((i, elm1) => {
-                const $element = $(elm1);
-                $name = $element.find('.name'),
-                $logo = $element.find('img'),
-                $points = $element.find('.points'),
-                $teamLink = $element.find('.moreLink'),
-                $changeInRank = $element.find('.change'),
-                $playersHolder = $element.find('.playersLine');
-                
-                const players = $playersHolder.text().match(/\S[A-Za-z0-9-_]*/gm);
+            if(!error && response.statusCode === 200){
+                const $ = cheerio.load(html);
+    
+                const header = $('.regional-ranking-header').text();
+                const teams = [];
+    
+                $('.ranked-team').each((i, elm1) => {
+                    const $element = $(elm1);
+                    $name = $element.find('.name'),
+                    $logo = $element.find('img'),
+                    $points = $element.find('.points'),
+                    $teamLink = $element.find('.moreLink'),
+                    $changeInRank = $element.find('.change'),
+                    $playersHolder = $element.find('.playersLine');
+                    
+                    const players = $playersHolder.text().match(/\S[A-Za-z0-9-_]*/gm);
+    
+                    const team = {
+                        team_name: $name.text(),
+                        team_logo: $logo.attr('src'),
+                        team_hltv_link: `https://www.hltv.org${$teamLink.attr('href')}`,
+                        team_points: $points.text().match(/\d+/)[0],
+                        team_change_in_rank: `${$changeInRank.text()==='-'?'0':$changeInRank.text()}`,
+                        team_players: players
+                    }
+    
+                    teams.push(team);
+                });
 
-                const team = {
-                    team_name: $name.text(),
-                    team_logo: $logo.attr('src'),
-                    team_hltv_link: `https://www.hltv.org${$teamLink.attr('href')}`,
-                    team_points: $points.text().match(/\d+/)[0],
-                    team_change_in_rank: `${$changeInRank.text()==='-'?'0':$changeInRank.text()}`,
-                    team_players: players
-                }
-
-                teams.push(team);
-            });
-
-            if(teams.length === 0){
-                res.statusMessage = "Did not find any data";
-                res.status(404).end()
-            }else{
                 res.json({
                     header,
                     teams
-                }); 
+                });
+
+            }else if(response.statusCode !== 200 && (date.getTime() === today.getTime())){
+                scrapWeb(date.getDate() - 7);
+            }else {
+                res.statusMessage = "Did not find any data";
+                res.status(404).end();
             }
-        }
-    });
+        });    
+    }
 });
 
 function getMonday(d) {
